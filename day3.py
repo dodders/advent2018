@@ -25,13 +25,6 @@ def insert(point, claimid):
 
 
 def pprint():
-    # maxx = 0
-    # maxy = 0
-    # for p in points:
-    #     if p[0] > maxx:
-    #         maxx = p[0]
-    #     if p[1] > maxy:
-    #         maxy = p[1]
     maxx = max(points, key=itemgetter(0))[0] + 2
     maxy = max(points, key=itemgetter(1))[1] + 2
     for y in range(1, maxy):
@@ -59,8 +52,6 @@ for line in data:
                 insert((x, y), d['id'])
 
 
-# print(points)
-# pprint()
 print(claims)
 ct = 0
 for v in points.values():
