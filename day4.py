@@ -1,8 +1,3 @@
-with open('gddata4sorted.txt') as f:
-# with open('data4test.txt') as f:
-    data = f.readlines()
-
-
 def parse(s):
     r = {}
     endb = s.find(']')
@@ -39,7 +34,6 @@ def totalsleep(guard):
 
 
 def getguardwithmaxsleep():
-    guards = {}
     guard = None
     gwithmax = (None, 0)
     for line in data:
@@ -79,9 +73,48 @@ def findmin(g):
     return maxmins
 
 
-guard = getguardwithmaxsleep()
-minute = findmin(guard)
-print('minute, total, guard:', minute[0], minute[1], guard)
-print('answer =', minute[0], '*', int(guard['id']), '=', minute[0] * int(guard['id']))
+def map_guard_mins():
+    for guard in guards.values():
+        mins = {}
+        times = guard['times']
+        if len(times) > 0:
+            for x in range(0, len(times), 2):
+                for y in range(getmins(times[x]), getmins(times[x+1])):
+                    if y in mins:
+                        mins[y] = mins[y] + 1
+                    else:
+                        mins[y] = 1
+            allmins[guard['id']] = mins
+    print('all mins:', allmins)
+
+
+def find_top_min():
+    t_guard, t_min, count = None, 0, 0
+    for item in allmins.items():
+        mins = item[1]
+        print('processing:', item)
+        g_top_min = max(mins.items(), key=lambda x: x[1])
+        if g_top_min[1] > count:
+            t_guard = item[0]
+            t_min = g_top_min[0]
+            count = g_top_min[1]
+    return t_guard, t_min, count
+
+
+with open('gddata4sorted.txt') as f:
+# with open('data4test.txt') as f:
+    data = f.readlines()
+
+guards = {}
+allmins = {}
+getguardwithmaxsleep()
+map_guard_mins()
+ret = find_top_min()
+print('guard, minute, count:', ret)
+print('answer = guard * minute =', int(ret[0]) * int(ret[1]))
+# findmin()
+# minute = findmin(guard)
+# print('minute, total, guard:', minute[0], minute[1], guard)
+# print('answer =', minute[0], '*', int(guard['id']), '=', minute[0] * int(guard['id']))
 
 
