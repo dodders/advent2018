@@ -2,7 +2,7 @@ import numpy as np
 import sys as s
 
 np.set_printoptions(threshold=np.inf)
-s.setrecursionlimit(10000)
+s.setrecursionlimit(100000)
 
 
 def convert(lines):
@@ -40,19 +40,32 @@ def get_closest(dists):
 
 
 def calc_distances():
+    ret = ()
+    ct = 0
     for y in range(maxy):
         for x in range(maxx):
             print('doing distances for ', y, x)
-            if a[y, x] == '.':
-                distances = []
-                for p in points:
-                    dist = get_dist(x, y, p)
-                    distances.append((p[2], dist))
-                closest = get_closest(distances)
-                if len(closest) == 1:
-                    a[y, x] = closest[0]
+            # if a[y, x] == '.':
+            distances = []
+            for p in points:
+                dist = get_dist(x, y, p)
+                distances.append((p[2], dist))
+            # part 2...
+            sum_dists = sum(b for (a, b) in distances)
+            if sum_dists <= max_distance:
+                a[y, x] = sum_dists
+                print('found at', x, y)
+                ct += 1
+                if ret == ():
+                    ret = (x, y)  # return first coordinate in the area.
+                # part 1 code below
+                # closest = get_closest(distances)
+                # if len(closest) == 1:
+                #     a[y, x] = closest[0]
+    return ret, ct
 
 
+# flood fill part 1
 def flood_fill(x, y, target, seen, in_area):
     # print(x, y, 'entered with ct', ct)
     if (x, y) in seen:  # node already processed.
@@ -72,6 +85,27 @@ def flood_fill(x, y, target, seen, in_area):
     return False
 
 
+# flood fill part 2
+def flood_fill2(x, y, un_target, seen, in_area):
+    print('area find at', x, y, 'with', len(in_area), 'found and', len(seen), 'processed.')
+    if (x, y) in seen:  # node already processed.
+        return True
+    seen.append((x, y))
+    if x < 0 or y < 0 or x == maxx or y == maxx:  # out of bounds.
+        return False  # hit an edge!
+    if a[y, x] == un_target:  # not part of the target.
+        return True
+    in_area.append((x, y))
+    print(x, y, 'included in area.')
+    # keep going until we run out of nodes or hit an edge
+    if flood_fill2(x, y-1, un_target, seen, in_area):
+        if flood_fill2(x, y+1, un_target, seen, in_area):
+            if flood_fill2(x+1, y, un_target, seen, in_area):
+                if flood_fill2(x-1, y, un_target, seen, in_area):
+                    return True
+    return False
+
+
 def get_areas():
     areas = []
     for p in points:
@@ -87,18 +121,47 @@ def get_areas():
     print(max(areas, key=lambda x: x[1]))
 
 
+def get_area2(start):
+    x = start[0]
+    y = start[1]
+    print('starting area find at', x, y)
+    in_area = []
+    if flood_fill2(x, y, '.', [], in_area):  # returns true if it doesn't hit an edge
+        print(len(in_area), in_area)
+    else:
+        print('hit edge!')
+
+
+def write_csv():
+    with open('out.csv', 'w') as f:
+        for y in range(maxy):
+            for x in range(maxx):
+                f.write(str(a[y, x]))
+                f.write(',')
+            f.write('\n')
+
+
 # with open('data6test.txt') as f:
 with open('data6.txt') as f:
     lines = f.read().split('\n')
 
 pad = 3
+# max_distance = 30  # test dataset
+max_distance = 10000  # full dataset
 points = convert(lines)
 print(points)
 maxx, maxy = get_axes(pad)
 a = np.full((maxy, maxx), '.', dtype=object)
 load_points()
 print('calculating distances...')
-calc_distances()
-print(a)
-print('getting areas...')
-get_areas()
+start_point, count = calc_distances()
+# print(a)
+print('area size:', count)
+write_csv()
+
+# part 2...
+# get_area2(start_point)
+
+# part 1...
+# print('getting areas...')
+# get_areas()
