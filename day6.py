@@ -75,8 +75,6 @@ def flood_fill(x, y, target, seen, in_area):
 def get_areas():
     areas = []
     for p in points:
-        # for y in range(maxy):
-        #     for x in range(maxx):
         x = p[0]
         y = p[1]
         print('doing areas for', x, y)
@@ -104,6 +102,3 @@ calc_distances()
 print(a)
 print('getting areas...')
 get_areas()
-# ar = []
-# flood_fill(7, 0, 'C', [], ar)
-# print(len(ar), ar)
