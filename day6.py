@@ -1,24 +1,20 @@
 import numpy as np
-import sys as s
-
-np.set_printoptions(threshold=np.inf)
-s.setrecursionlimit(100000)
 
 
 def convert(lines):
     ret = []
     c = 65
     for l in lines:
-        s = l.split()
-        ret.append((int(s[0].strip().replace(',', '')), int(s[1].strip()), chr(c)))
+        s = l.split(',')
+        ret.append((int(s[0].strip()), int(s[1].strip()), chr(c)))
         c += 1
     return ret
 
 
-def get_axes(pad):
+def get_axes():
     maxx = max(points, key=lambda x: x[0])[0]
     maxy = max(points, key=lambda x: x[1])[1]
-    return maxx + pad, maxy + pad
+    return int(maxx) + 1, int(maxy) + 1
 
 
 def load_points():
@@ -31,7 +27,7 @@ def get_dist(x, y, p):
 
 
 def get_closest(dists):
-    min_dist = min(dists, key=lambda x: x[1])
+    min_dist = min(dists, key=lambda x:x[1])
     ret = []
     for d in dists:
         if d[1] == min_dist[1]:
@@ -40,95 +36,28 @@ def get_closest(dists):
 
 
 def calc_distances():
-    ret = ()
-    ct = 0
-    for y in range(maxy):
-        for x in range(maxx):
-            print('doing distances for ', x, y)
-            # if a[y, x] == '.':
-            distances = []
-            for p in points:
-                dist = get_dist(x, y, p)
-                distances.append((p[2], dist))
-            # part 2...
-            sum_dists = sum(b for (a, b) in distances)
-            # print('point', x, y, 'dists', distances, 'with sum', sum_dists)
-            if sum_dists < max_distance:
-                a[y, x] = sum_dists
-                print('found at', x, y)
-                ct += 1
-                if ret == ():
-                    ret = (x, y)  # return first coordinate in the area.
-                # part 1 code below
-                # closest = get_closest(distances)
-                # if len(closest) == 1:
-                #     a[y, x] = closest[0]
-    return ret, ct
-
-
-# flood fill part 1
-def flood_fill(x, y, target, seen, in_area):
-    # print(x, y, 'entered with ct', ct)
-    if (x, y) in seen:  # node already processed.
-        return True
-    seen.append((x, y))
-    if x < 0 or y < 0 or x == maxx or y == maxx:  # out of bounds.
-        return False  # hit an edge!
-    if a[y, x] != target:  # not part of the target.
-        return True
-    in_area.append((x, y))
-    # keep going until we run out of nodes or hit an edge
-    if flood_fill(x, y-1, target, seen, in_area):
-        if flood_fill(x, y+1, target, seen, in_area):
-            if flood_fill(x+1, y, target, seen, in_area):
-                if flood_fill(x-1, y, target, seen, in_area):
-                    return True
-    return False
-
-
-def get_areas():
-    areas = []
-    for p in points:
-        x = p[0]
-        y = p[1]
-        print('doing areas for', x, y)
-        in_area = []
-        if flood_fill(x, y, a[y, x], [], in_area):  # returns true if it doesn't hit an edge
-            area = (a[y, x], len(in_area))
-            if area not in areas:
-                areas.append(area)
-    print(areas)
-    print(max(areas, key=lambda x: x[1]))
-
-
-def write_csv():
-    with open('out.csv', 'w') as f:
+    for x in range(maxx):
         for y in range(maxy):
-            for x in range(maxx):
-                f.write(str(a[y, x]))
-                f.write(',')
-            f.write('\n')
+            if a[y, x] == '.':
+                distances = []
+                for p in points:
+                    dist = get_dist(x, y, p)
+                    distances.append((p[2], dist))
+                a[y, x] = distances
+                closest = get_closest(distances)
+                if len(closest) == 1:
+                    a[y, x] = closest[0].lower()
+                else:
+                    a[y, x] = '.'
 
 
-# with open('data6test.txt') as f:
-with open('data6.txt') as f:
+with open('data6test.txt') as f:
     lines = f.read().split('\n')
 
-pad = 3
-# max_distance = 32  # test dataset
-max_distance = 10000  # full dataset
 points = convert(lines)
-print('points', points)
-
-
-maxx, maxy = get_axes(pad)
-a = np.full((maxy, maxx), '.', dtype=object)
+maxx, maxy = get_axes()
+a = np.zeros((maxy+1, maxx+1), dtype=object)
+a.fill('.')
 load_points()
-print('calculating distances...')
-start_point, count = calc_distances()
-# print(a)
-print('area size:', count)
-
-# part 1...
-# print('getting areas...')
-# get_areas()
+calc_distances()
+print(a)
