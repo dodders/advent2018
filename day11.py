@@ -59,31 +59,52 @@ def summed_area(grid, size):
 
 # get sum of area starting at x, y with size dial
 def get_area(sgrid, x, y, dial):
-    a = sgrid[x - 1 , y - 1]
-    b = sgrid[x + dial - 1, y - 1]
-    c = sgrid[x - 1, y + dial - 1]
-    d = sgrid[x + dial - 1, y + dial - 1]
-    print('d', d, 'a', a, 'b', b, 'c', c)
+    a = sgrid[x - 1, y - 1] if (x - 1, y - 1) in sgrid else 0
+    b = sgrid[x + dial - 1, y - 1] if (x + dial - 1, y - 1) in sgrid else 0
+    c = sgrid[x - 1, y + dial - 1] if (x - 1, y + dial - 1) in sgrid else 0
+    d = sgrid[x + dial - 1, y + dial - 1] if (x + dial - 1, y + dial - 1) in sgrid else 0
+    # print('d', d, 'a', a, 'b', b, 'c', c)
     return d + a - b - c
 
 
-def get_max_total(grid, size, dial):
-    mtot = 0
+def get_max_total(sgrid, size, dial):
+    mtot = -10000
     mpoint = ()
     for y in range(1, size - dial - 1):
         for x in range(1, size - dial - 1):
-            tot = get_totals(grid, x, y, dial)
+            tot = get_area(sgrid, x, y, dial)
+            # print('dial', dial, 'total', tot, ' at point', x, y)
             if tot > mtot:
                 mtot = tot
                 mpoint = (x, y)
     return mtot, mpoint
 
 
+def get_max_overall(sgrid, size):
+    otot = 0
+    odial = 0
+    opoint = ()
+    for dial in range(1, size + 1):
+        if dial % 10 == 0:
+            print('doing dial', dial)
+        tot, point = get_max_total(sgrid, size, dial)
+        # print('dial', dial, 'total', tot, ' at point', point)
+        if tot > otot:
+            otot = tot
+            opoint = point
+            odial = dial
+    return otot, opoint, odial
+
+
 # # part 1 answer is 21, 13 with size 28.
 size = 300
-serial = 42
-grid = get_grid(size, serial)
+serial = 9110
+raw_grid = get_grid(size, serial)
 # print_grid(grid, size)
-print('total:', get_totals(grid, 21, 61, 3), '\n')
-sgrid = summed_area(grid, size)
-print('summed total:', get_area(sgrid, 21, 61, 3))
+# print('total:', get_totals(grid, 90, 269, 16), '\n')
+sgrid = summed_area(raw_grid, size)
+print('point total:', get_area(sgrid, 90, 269, 16))
+print('max total:', get_max_total(sgrid, size, 16))
+print('overall total, point, dial:', get_max_overall(sgrid, size))
+# tot, point, dial = get_max_overall(sgrid, size)
+# print('total', tot, 'at point', point, 'with dial', dial)
