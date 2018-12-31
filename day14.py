@@ -9,36 +9,14 @@ def pprint(r, a, b):
     print()
 
 
-def move(elf, score, max_size):
-    pos = elf
-    for _ in range(score + 1):
-        pos += 1
-        if pos >= max_size:
-            pos = 0
-    return pos
-
-
-def find_in_list(find_str, l):
-    for i in range(len(l) - len(find_str) + 1):
-        comp = ''
-        for ichar in l[i:i+len(find_str)]:
-            comp += str(ichar)
-        if find_str == comp:
-            return i
-    return None
-
-
-after = 209231
-# after = 59414
-str_after = str(after)
-# str_after = '01245'
-init = [3, 7]
+# after = 209231
+after = 59414
+recipies = [3, 7]
 total_size = after + 10
-
-recipies = init
+str_after = str(after)
 e1 = 0  # elf pointers
 e2 = 1
-buf = ''.join(map(lambda x: str(x), init))
+buf = ''.join(map(str, recipies))
 max_buf = len(str_after)
 
 # for i in range(total_size):
@@ -51,20 +29,18 @@ while True:
         buf += s
     if len(buf) > max_buf:
         buf = buf[-max_buf-20:]
-    # pprint(recipies, e1, e2)
     # part 2 detection
-    if str_after in buf:
-        # buf += '0'
-        # recipies.append(0)
-        print('after %s found in buf %s in iteration %d' % (after, buf, i))
-        print('total recipies %d and len of sequence is %d' % (len(recipies), len(str_after)))
-        idx = find_in_list(str_after, recipies[-10:])
-        print('last 10 of recipies %s with %s starting at %d.' % (recipies[-10:], str_after, idx))
-        print('previous recipies is %d' % (len(recipies) - 10 + idx))
-        # print(recipies)
+    end = ''.join(map(str, recipies[-len(str_after):]))
+    end_and_one = ''.join(map(str, recipies[-len(str_after)-1:-1]))
+    if str_after == end or str_after == end_and_one:
+        prev = len(recipies) - len(str_after)
+        if str_after == end_and_one:
+            prev -= prev
+        print('%d found with %d previous recipies' % (after, prev))
         break
-    e1 = move(e1, recipies[e1], len(recipies))
-    e2 = move(e2, recipies[e2], len(recipies))
+    # move elves
+    e1 = (e1 + recipies[e1] + 1) % len(recipies)
+    e2 = (e2 + recipies[e2] + 1) % len(recipies)
     # part 1 detection
     # if len(recipies) >= total_size:
     #     print('total recipies made!')
