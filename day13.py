@@ -55,23 +55,25 @@ def find_carts(m):
 # also model the new direction logic in dictionaries rather than in code, just because.
 def tick(cts, m):
     ret = {}
-    left = cts.copy()
-    for point, attribs in cts.items():
-        if point not in crashed:  # if this cart has been crashed into already, then don't process it
+    cts_iter = cts.copy()  # use this for iteration as we need to delete items from the cart list as we go...
+    for point in cts_iter.keys():
+        if point in cts:  # if point isn't found then it was crashed into and removed, so skip it.
             # move cart using the straights mappings.
+            attribs = cts[point]
             current_direction = attribs[0]
             turn_buffer = attribs[1]
             new_point = tuple(map(operator.add, point, straights[current_direction]))
+            del cts[point]
 
             # check for a collision.
             if new_point in ret.keys() or new_point in cts.keys():
                 print('crash at ', new_point)
-                # return new_point, ret part 1 halted when a crash detected.
+                # return new_point  -- ret part 1 halted when a crash detected.
                 # part 2, remove the 2 offending carts and carry on.
                 if new_point in ret.keys():
                     del ret[new_point]
-                if new_point in cts.keys():  # can't remove from cts as we are iterating over it, so store for later...
-                    crashed.append(new_point)
+                if new_point in cts:
+                    del cts[new_point]
 
             # continue processing if not crashed...
             else:
@@ -87,7 +89,7 @@ def tick(cts, m):
                     compass.rotate(rotation_amount[turn_buffer[-1]])  # rotate compass based on left/right/strait turn.
                     ret[new_point] = (compass[-1], turn_buffer)  # set new direction from compass.
 
-                # corner logic is tricksy because the new direction depends on both the corner and the current direction...
+                # corner logic is tricksy because the new direction depends on both the corner and the current direction
                 elif instruction == '\\' or instruction == '/':
                     corner = instruction + current_direction
                     ret[new_point] = (corners[corner], turn_buffer)  # look up new direction in the corners dictionary.
@@ -121,9 +123,15 @@ while True:
     crash, carts = tick(carts, maze)
     if len(carts) == 1:
         print('only 1 cart left', carts)
+        print('one more tick with the one cart...')
+        crash, carts = tick(carts, maze)
+        print('cart is at', carts)
         break
-        # first guess 146,90
+        # part 2 first guess 146,90
         # 2nd guess 145,90.
+        # 3rd guess 146,90.
+        # 4th guess 64,50 which is where it is before the last tick...
+        # 5th guess is 65,50 with one tick with that cart remaining.
     print('num carts', len(carts), 'carts', carts)  # part 1 answer 94,78. first time, dammit!
     # pprint(carts, maze)
     print()
