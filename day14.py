@@ -12,23 +12,16 @@ def pprint(r, a, b):
 # after = 209231
 after = 59414
 recipies = [3, 7]
-total_size = after + 10
 str_after = str(after)
 e1 = 0  # elf pointers
 e2 = 1
-buf = ''.join(map(str, recipies))
-max_buf = len(str_after)
 
-# for i in range(total_size):
 i = 0
 while True:
     i += 1
     new_recipie = recipies[e1] + recipies[e2]
     for s in str(new_recipie):
         recipies.append(int(s))
-        buf += s
-    if len(buf) > max_buf:
-        buf = buf[-max_buf-20:]
     # part 2 detection
     end = ''.join(map(str, recipies[-len(str_after):]))
     end_and_one = ''.join(map(str, recipies[-len(str_after)-1:-1]))
