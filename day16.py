@@ -132,13 +132,61 @@ for i in range(0, len(d), 3):
     after = [int(s) for s in d[i+2][9:19].split(',')]
     machine.append((before, ops, after))
 
-ct = 0
-for state in machine:
-    new_states = [f(state[0], state[1]) for f in funcs]
-    matches = [s for s in new_states if s == state[2]]
-    if len(matches) >= 3:
-        print('matches', matches)
-        ct += 1
-print('number of samples that behave like 3 or more opcodes', ct)
+opcodes = {11: eqri, 8: gtrr, 10: gtri, 14: eqir, 5: eqrr, 6: gtir, 1: banr,
+           0: bani, 9: seti, 3: setr, 4: bori, 13: borr, 15: addr, 2: muli,
+           12: addi, 7: mulr}
+# opcodes = {}
+
+
+# first answer 537 - correct!
+def part2():
+    with open('data16.2.txt') as f2:
+        ops = f2.read().split('\n')
+    regs = [0, 0, 0, 0]
+    for op in ops:
+        int_ops = [int(o) for o in op.split(' ')]
+        func = opcodes[int_ops[0]]
+        regs = func(regs, int_ops)
+    print(regs)
+
+
+def get_opcodes():
+    print('cycling...')
+    filtered_machine = [state for state in machine if state[1][0] not in opcodes.keys()]
+    if len(filtered_machine) == 0:
+        print('halting!')
+        print(opcodes)
+        exit()
+    for state in machine:
+        new_states = [(f.__name__, state[1][0], f(state[0], state[1])) for f in funcs]
+        matches = [(f, o, news) for f, o, news in new_states if news == state[2]]
+        matches = [(f, o, s) for f, o, s in matches if f not in opcodes.values()]
+        # len 1 yields one match - eqri == opcode 11.
+        # len 2 yields gtrr == 8
+        if len(matches) == 1:
+            opcode = matches[0][1]
+            funcname = matches[0][0]
+            if opcode in opcodes:
+                if opcodes[opcode] != funcname:
+                    print('conflict!', funcname, opcode, opcodes[opcode])
+                    exit(1)
+            else:
+                opcodes[opcode] = funcname
+
 
 # part 1 first guess 580 correct. i love list comprehensions.
+def part1():
+    ct = 0
+    for state in machine:
+        new_states = [f(state[0], state[1]) for f in funcs]
+        matches = [s for s in new_states if s == state[2]]
+        if len(matches) >= 3:
+            print('matches', matches)
+            ct += 1
+    print('number of samples that behave like 3 or more opcodes', ct)
+
+
+# part1()
+# while True:
+#     get_opcodes()  # just get opcodes.
+part2()
