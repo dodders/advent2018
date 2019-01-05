@@ -1,15 +1,3 @@
-with open('data16.1.txt') as f:
-    data = f.read().split('\n')
-
-d = [d for d in data if d != '']
-machine = []
-for i in range(0, len(d), 3):
-    before = [int(s) for s in d[i][9:19].split(',')]
-    ops = [int(s) for s in d[i+1].split(' ')]
-    after = [int(s) for s in d[i+2][9:19].split(',')]
-    machine.append((before, ops, after))
-
-
 def get_args(state, ops):
     s = state.copy()
     o, a, b, c = ops[0], ops[1], ops[2], ops[3]
@@ -130,10 +118,27 @@ def eqrr(state, ops):  # reg a == reg b
     return reg
 
 
-state = [[3, 2, 1, 1], [9, 2, 1, 2], [3, 2, 2, 1]]
-print('state', state)
+# state = [[3, 2, 1, 1], [9, 2, 1, 2], [3, 2, 2, 1]]
+# print('state', state)
 funcs = [addr, addi, mulr, muli, banr, bani, borr, bori, setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr]
-new_states = [f(state[0], state[1]) for f in funcs]
-print('new states', new_states)
-matches = [s for s in new_states if s == state[2]]
-print('matches', matches)
+with open('data16.1.txt') as f:
+    data = f.read().split('\n')
+
+d = [d for d in data if d != '']
+machine = []
+for i in range(0, len(d), 3):
+    before = [int(s) for s in d[i][9:19].split(',')]
+    ops = [int(s) for s in d[i+1].split(' ')]
+    after = [int(s) for s in d[i+2][9:19].split(',')]
+    machine.append((before, ops, after))
+
+ct = 0
+for state in machine:
+    new_states = [f(state[0], state[1]) for f in funcs]
+    matches = [s for s in new_states if s == state[2]]
+    if len(matches) >= 3:
+        print('matches', matches)
+        ct += 1
+print('number of samples that behave like 3 or more opcodes', ct)
+
+# part 1 first guess 580 correct. i love list comprehensions.
