@@ -48,20 +48,39 @@ def expand(cs):
 
 
 def pprint():
-    for y in range(miny - 1, maxy + 1):
+    for y in range(miny - 1, maxy + 2):
         row = ''
-        for x in range(minx - 1, maxx + 1):
-            if (x, y) in grid:
+        for x in range(minx - 1, maxx + 2):
+            if (x, y) in water:
+                row += '~'
+            elif (x, y) == well:
+                row += '+'
+            elif (x, y) in clay:
                 row += '#'
             else:
                 row += '.'
         print(row)
 
 
+def water_drop(drop):
+    # move drop down unti it hits clay or water
+    new_drop = (drop[0], drop[1] + 1)
+    while new_drop not in clay and new_drop not in water:
+        drop = new_drop
+        new_drop = (drop[0], drop[1] + 1)
+    water.append(drop)
+
+
 coords = [getxy(d) for d in data]
-grid = expand(coords)
+clay = expand(coords)
+water = []
 maxx = max([get_max(c[0]) for c in coords])
 minx = min([get_min(c[0]) for c in coords])
 maxy = max([get_max(c[1]) for c in coords])
 miny = min([get_min(c[1]) for c in coords])
+well = (500, 0)
 pprint()
+for i in range(1, 6):
+    print('water drop', i)
+    water_drop((well[0], well[1]))
+    pprint()
