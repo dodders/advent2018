@@ -2,22 +2,6 @@ with open('test.txt') as f:
     data = f.read().split('\n')
 
 
-def get_max(s):
-    if '..' not in s:
-        return int(s)
-    else:
-        idx = s.find('..')
-        return max(int(s[:idx]), int(s[idx+2:]))
-
-
-def get_min(s):
-    if '..' not in s:
-        return int(s)
-    else:
-        idx = s.find('..')
-        return min(int(s[:idx]), int(s[idx+2:]))
-
-
 def getxy(s):
     xstr = s.find('x=')
     ystr = s.find('y=')
@@ -74,10 +58,10 @@ def water_drop(drop):
 coords = [getxy(d) for d in data]
 clay = expand(coords)
 water = []
-maxx = max([get_max(c[0]) for c in coords])
-minx = min([get_min(c[0]) for c in coords])
-maxy = max([get_max(c[1]) for c in coords])
-miny = min([get_min(c[1]) for c in coords])
+maxx = max([c[0] for c in clay])
+minx = min([c[0] for c in clay])
+maxy = max([c[1] for c in clay])
+miny = min([c[1] for c in clay])
 well = (500, 0)
 pprint()
 for i in range(1, 6):
