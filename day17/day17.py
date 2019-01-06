@@ -46,12 +46,25 @@ def pprint():
         print(row)
 
 
-def water_drop(drop):
+def down(d):
+    return d[0], d[1] + 1
+
+
+def right(d):
+    return d[0] + 1, d[1]
+
+
+def left(d):
+    return d[0] - 1, d[1]
+
+
+def move(drop):
     # move drop down unti it hits clay or water
-    new_drop = (drop[0], drop[1] + 1)
+    new_drop = down(drop)
     while new_drop not in clay and new_drop not in water:
         drop = new_drop
-        new_drop = (drop[0], drop[1] + 1)
+        down(drop)
+    # can we move l or r?
     water.append(drop)
 
 
@@ -66,5 +79,5 @@ well = (500, 0)
 pprint()
 for i in range(1, 6):
     print('water drop', i)
-    water_drop((well[0], well[1]))
+    move((well[0], well[1]))
     pprint()
