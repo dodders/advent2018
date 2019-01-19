@@ -1,0 +1,52 @@
+answer for 1000
+wooded 605 lumberyards 333 answer 201465
+answer for 2000
+wooded 568 lumberyards 324 answer 184032
+answer for 3000
+wooded 581 lumberyards 313 answer 181853
+answer for 4000
+wooded 580 lumberyards 337 answer 195460
+answer for 5000
+wooded 600 lumberyards 325 answer 195000
+answer for 6000
+wooded 561 lumberyards 340 answer 190740
+answer for 7000
+wooded 573 lumberyards 308 answer 176484
+answer for 8000
+wooded 605 lumberyards 333 answer 201465
+answer for 9000
+wooded 568 lumberyards 324 answer 184032
+answer for 10000
+wooded 581 lumberyards 313 answer 181853
+answer for 11000
+wooded 580 lumberyards 337 answer 195460
+answer for 12000
+wooded 600 lumberyards 325 answer 195000
+answer for 13000
+wooded 561 lumberyards 340 answer 190740
+answer for 14000
+wooded 573 lumberyards 308 answer 176484
+answer for 15000
+wooded 605 lumberyards 333 answer 201465
+answer for 16000
+wooded 568 lumberyards 324 answer 184032
+answer for 17000
+wooded 581 lumberyards 313 answer 181853
+answer for 18000
+wooded 580 lumberyards 337 answer 195460
+answer for 19000
+wooded 600 lumberyards 325 answer 195000
+answer for 20000
+wooded 561 lumberyards 340 answer 190740
+answer for 21000
+wooded 573 lumberyards 308 answer 176484
+answer for 22000
+wooded 605 lumberyards 333 answer 201465
+answer for 23000
+wooded 568 lumberyards 324 answer 184032
+answer for 24000
+wooded 581 lumberyards 313 answer 181853
+answer for 25000
+wooded 580 lumberyards 337 answer 195460
+answer for 26000
+wooded 600 lumberyards 325 answer 195000
