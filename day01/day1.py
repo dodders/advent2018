@@ -1,13 +1,19 @@
 with open('input.txt') as f:
-    data = f.readlines()
+    data = f.read().split('\n')
+
+# data = [1, -2, 3, 1]
 
 total = 0
-for line in data:
-    op = line[:1]
-    amt = line[1:-1]
-    if op == '+':
-        total = total + amt
-    else:
-        total = total - amt
+freq = []
+while True:
+    for line in data:
+        total = total + int(line)
+        if total in freq:
+            print('freq reached twice:', total)
+            exit()
+        else:
+            freq.append(total)
 
-print('amt:', amt)
+# part 1 answer 547
+# print('part 1 total:', total)
+
