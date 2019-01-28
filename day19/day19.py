@@ -156,6 +156,7 @@ def part1():
 
 # part 1
 def part2():
+    print('starting...', flush=True)
     ops = [d.split(' ') for d in data if d != '']
     # going to assume that the #ip op is the first op for now as it simplifies the part1 logic.
     reg_ptr = int(ops.pop(0)[1])  # set register pointer to the register referenced in the #ip operation.
@@ -165,20 +166,24 @@ def part2():
     state = [1, 0, 0, 0, 0, 0]
     # ptr = 3
     # state = [0, 3, 1, limit, 10550400, 1]
+    oldfirst = state[0]
+    oldlast = state[5]
     while len(ops) > ptr >= 0:
         if ptr == 4:
-            state[4] = state[3]
+            state[3] = 50
         state[reg_ptr] = ptr    # update register with current instruction ptr
         op = ops[ptr]
         func = [f for f in funcs if f.__name__ == op[0]][0]  # find function, should only be one.
         old_state = state
         state = func(state, op)
-        if ptr == 4:
-            print('ip=%d %s %s %s ' % (ptr, old_state, op, state))
+        # if oldfirst != state[0] or oldlast != state[5]:
+        print('ip=%d %s %s %s ' % (ptr, old_state, op, state), flush=True)
+            # oldfirst = state[0]
+            # oldlast = state[5]
         ptr = state[reg_ptr]    # save instruction ptr
         ptr += 1  # inc ptr
 
-    print('limit %d register 0: %d' % (limit, state[0]))
+    print('register 0: %d' % state[0])
 
 
 # part1()
