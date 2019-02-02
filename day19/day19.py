@@ -154,37 +154,16 @@ def part1():
     print('register 0:', state[0])
 
 
-# part 1
-def part2():
-    print('starting...', flush=True)
-    ops = [d.split(' ') for d in data if d != '']
-    # going to assume that the #ip op is the first op for now as it simplifies the part1 logic.
-    reg_ptr = int(ops.pop(0)[1])  # set register pointer to the register referenced in the #ip operation.
-    # set intial state
-    # ip=3 [0, 3, 1, 10551320, 10550400, 1] ['mulr', '5', '2', '4'] [0, 3, 1, 10551320, 1, 1]
-    ptr = 0
-    state = [1, 0, 0, 0, 0, 0]
-    # ptr = 3
-    # state = [0, 3, 1, limit, 10550400, 1]
-    oldfirst = state[0]
-    oldlast = state[5]
-    while len(ops) > ptr >= 0:
-        if ptr == 4:
-            state[3] = 50
-        state[reg_ptr] = ptr    # update register with current instruction ptr
-        op = ops[ptr]
-        func = [f for f in funcs if f.__name__ == op[0]][0]  # find function, should only be one.
-        old_state = state
-        state = func(state, op)
-        # if oldfirst != state[0] or oldlast != state[5]:
-        print('ip=%d %s %s %s ' % (ptr, old_state, op, state), flush=True)
-            # oldfirst = state[0]
-            # oldlast = state[5]
-        ptr = state[reg_ptr]    # save instruction ptr
-        ptr += 1  # inc ptr
-
-    print('register 0: %d' % state[0])
+def part2(lim):
+    z = 0
+    for i in range(1, lim + 1):
+        mod = lim % i
+        if mod == 0:
+            z += i
+        print('cycle = %d, mod = %d, z = %d' % (i, mod, z), flush=True)
+    # correct answer is 25945920
+    print('z:', z)
 
 
 # part1()
-part2()
+part2(10551320)
