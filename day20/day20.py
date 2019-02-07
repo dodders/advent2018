@@ -14,22 +14,30 @@ def get_expr(s):
 
 
 def parse(done, doing, curr):
+    start = curr
     if len(doing) == 0:
         print(done, ' end')
-    # if doing[0] == ')':
-    #     print(done, '+', doing[0])
-    #     return parse(done + doing[0], doing[1:], curr)
-    elif doing[0] in ['N', 'S', 'E', 'W']:
+    while doing[0] in ['N', 'S', 'E', 'W']:
         curr = do_move(doing[0], curr)
-        # print(done, '+', doing[0])
-        parse(done + doing[0], doing[1:], curr)
-    elif doing[0] == '(':
+        done += doing[0]
+        print(done, '+', doing[0])
+        doing = doing[1:]
+        if len(doing) == 0:
+            break
+    if len(doing) == 0:
+        return
+    if doing[0] == '(':
         s, e = get_expr(doing)
         expr = doing[s+1:e]  # exclude the brackets
         opts = expr.split('|')
         for opt in opts:
             parse(done, opt + doing[e + 1:], curr)
         # parse(done + doing[0], doing[1:pos], curr) + parse(done + doing[0], doing[pos + 1:], curr)
+    elif doing[0] == '|':
+        parse(done, doing[1:], start)
+    else:
+        print('dropping...', doing[0])
+        parse(done, doing[1:], start)
 
 
 def do_move(move, curr):
@@ -77,14 +85,14 @@ rex = ex[1:-2]
 maze = {(0, 0): 'X'}
 # test1 = 'WNE'
 # test1 = 'ENWWW(NEEE|SSE)W'
-test1 = 'EN(NE|EN(S|W))W'
+# test1 = 'E(N|S|E|)W'
+test1 = 'ES(E|)NE'
+# test1 = 'EN(NE|EN(S|W))W'
 # test1 = 'ENWWW(NEEE|SSE(EE|N))'
 # test1 = 'EN(NEWS|)SE(WNSE|)EE(SWEN|)NNN'
 # test1 = 'ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN'
 # test1 = 'ENNWSWW(NEWS|)SSSEEN'
-# test1 = 'E(N|S|E|)W'
 # test1 = 'ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))'
-# test1 = 'ES(E|)NE'
 parse('', test1, (0, 0))  # done, route remaining, current point
 print()
 pprint(maze)
